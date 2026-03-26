@@ -28,3 +28,12 @@ python backend/python/naver_adgroup_builder.py \
   --exclude-ages 10,20 \
   --print-json
 ```
+
+
+## Vercel 배포 체크
+기존에 "반응이 없다"면 보통 루트 엔트리 페이지가 없어서입니다. 이제 아래가 포함됩니다.
+- `/` → `index.html` (즉시 확인 가능한 UI)
+- `/api/health` → 서버리스 헬스체크
+- `/api/preview` → 하이어라키 트리 생성 API
+
+배포 후 먼저 `https://<your-domain>/api/health`가 `{ "ok": true }`를 반환하는지 확인하세요.
