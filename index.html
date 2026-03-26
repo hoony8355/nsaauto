@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NCC 하이어라키 미리보기</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; }
+      .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+      label { display: block; margin-top: 10px; font-weight: 600; }
+      input, select { width: 100%; padding: 10px; margin-top: 6px; }
+      button { margin-top: 14px; padding: 10px 14px; border-radius: 8px; border: 0; background: #03c75a; color: white; font-weight: 700; cursor: pointer; }
+      pre { background:#111; color:#ddd; padding:12px; border-radius:8px; overflow:auto; }
+      .muted { color:#555; font-size:14px; }
+    </style>
+  </head>
+  <body>
+    <h1>네이버 검색광고 하이어라키 미리보기</h1>
+    <p class="muted">Vercel 배포 후에도 바로 반응하도록, 서버리스 API와 연결된 최소 동작 화면입니다.</p>
+
+    <div class="card">
+      <label>템플릿</label>
+      <select id="template">
+        <option value="brand_general">brand_general</option>
+        <option value="device_specific">device_specific</option>
+        <option value="shopping_focus">shopping_focus</option>
+      </select>
+
+      <label>카테고리 (쉼표 구분)</label>
+      <input id="categories" value="shoes,bag" />
+
+      <label>성별 (쉼표 구분: ALL,MALE,FEMALE)</label>
+      <input id="genders" value="ALL" />
+
+      <label>지역 (쉼표 구분)</label>
+      <input id="regions" value="전국,서울" />
+
+      <label>제외 연령 (쉼표 구분: 10,20,30,40,50,60+)</label>
+      <input id="excludeAges" value="10,20" />
+
+      <button id="previewBtn">미리보기 생성</button>
+    </div>
+
+    <div class="card">
+      <h3>Tree Preview</h3>
+      <pre id="tree">아직 생성되지 않았습니다.</pre>
+    </div>
+
+    <script>
+      const treeEl = document.getElementById('tree');
+      document.getElementById('previewBtn').addEventListener('click', async () => {
+        const payload = {
+          template: document.getElementById('template').value,
+          categories: document.getElementById('categories').value,
+          genders: document.getElementById('genders').value,
+          regions: document.getElementById('regions').value,
+          excludeAges: document.getElementById('excludeAges').value,
+        };
+
+        treeEl.textContent = '생성 중...';
+        const res = await fetch('/api/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          treeEl.textContent = `오류: ${res.status}`;
+          return;
+        }
+
+        const data = await res.json();
+        treeEl.textContent = data.tree;
+      });
+    </script>
+  </body>
+</html>
